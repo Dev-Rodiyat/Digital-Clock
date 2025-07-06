@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 
 const formatTime = (ms) => {
@@ -37,20 +36,20 @@ const Stopwatch = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-white text-black dark:bg-gray-900 dark:text-white transition-colors duration-300">
-      <div className="text-6xl font-mono mb-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white transition-colors duration-300 px-4">
+      <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-mono mb-6 text-center">
         {formatTime(elapsed)}
       </div>
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto items-center justify-center">
         <button
           onClick={isRunning ? stop : start}
-          className="px-4 py-2 rounded bg-green-500 hover:bg-green-600 text-white transition"
+          className="w-full sm:w-auto px-5 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white transition"
         >
           {isRunning ? "Pause" : "Start"}
         </button>
         <button
           onClick={reset}
-          className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white transition"
+          className="w-full sm:w-auto px-5 py-2 rounded bg-red-500 hover:bg-red-600 text-white transition"
         >
           Reset
         </button>

@@ -25,51 +25,76 @@ const Clock = () => {
     localStorage.setItem("clockFormat", is24Hour ? "24" : "12");
   }, [is24Hour]);
 
-  const formatTime = (date) => {
-    let hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-
-    const isAM = hours < 12;
-    let suffix = "";
-
-    if (!is24Hour) {
-      suffix = isAM ? "AM" : "PM";
-      hours = hours % 12 || 12;
-    }
-
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")} ${suffix}`;
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  const now = new Date();
+  const secondAngle = now.getSeconds() * 6; // 360 / 60
+  const minuteAngle = now.getMinutes() * 6 + now.getSeconds() * 0.1;
+  const hourAngle = (now.getHours() % 12) * 30 + now.getMinutes() * 0.5;
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-white text-black dark:bg-gray-900 dark:text-white transition-colors duration-300">
-      <div className="text-6xl font-mono mb-2">
-        {formatTime(time)}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white transition-colors duration-300 px-4">
+      <div className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full border-[8px] border-gray-300 dark:border-gray-700 shadow-inner bg-white dark:bg-gray-800 flex items-center justify-center">
+        {/* Clock center pin */}
+        <div className="absolute w-3 h-3 bg-black dark:bg-white rounded-full z-10" />
+
+        {/* HOUR HAND */}
+        <div
+          className="absolute w-1 h-16 bg-black dark:bg-white origin-bottom"
+          style={{
+            transform: `rotate(${hourAngle}deg)`,
+            bottom: '50%', // ensures rotation from center
+          }}
+        />
+
+        {/* MINUTE HAND */}
+        <div
+          className="absolute w-1 h-24 bg-gray-700 dark:bg-gray-300 origin-bottom"
+          style={{
+            transform: `rotate(${minuteAngle}deg)`,
+            bottom: '50%',
+          }}
+        />
+
+        {/* SECOND HAND */}
+        <div
+          className="absolute w-0.5 h-28 bg-red-500 origin-bottom"
+          style={{
+            transform: `rotate(${secondAngle}deg)`,
+            bottom: '50%',
+          }}
+        />
+
+        {/* Numbers */}
+        {Array.from({ length: 12 }).map((_, i) => {
+          const angle = (i + 1) * 30
+          const rad = (angle * Math.PI) / 180
+          const x = 50 + 42 * Math.sin(rad)
+          const y = 50 - 42 * Math.cos(rad)
+          return (
+            <div
+              key={i}
+              className="absolute text-sm font-bold"
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
+              {i + 1}
+            </div>
+          )
+        })}
       </div>
-      <div className="text-xl mb-6">
-        {formatDate(time)}
-      </div>
-      <div className="flex gap-4">
-        <button
-          onClick={() => setIs24Hour(!is24Hour)}
-          className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
-        >
-          Toggle {is24Hour ? "12" : "24"}-Hour
-        </button>
+
+      <div className="mt-8 flex gap-4 flex-wrap justify-center">
+        <div className="text-sm font-medium px-4 py-2 rounded bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition">
+          {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+        </div>
+
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
         >
-          {darkMode ? "Light" : "Dark"} Mode
+          {darkMode ? 'Light' : 'Dark'} Mode
         </button>
       </div>
     </div>

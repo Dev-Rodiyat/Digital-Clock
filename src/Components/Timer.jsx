@@ -1,103 +1,195 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
-function Timer() {
-  const [input, setInput] = useState('');
-  const [label, setLabel] = useState('');
-  const [seconds, setSeconds] = useState(0);
+const Timer = () => {
+  const [hours, setHours] = useState("");
+  const [minutes, setMinutes] = useState("");
+  const [seconds, setSeconds] = useState("");
+  const [remaining, setRemaining] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
+  const [timerName, setTimerName] = useState("");
+  const [customAudio, setCustomAudio] = useState(null);
+  const [isSoundPlaying, setIsSoundPlaying] = useState(false);
+
   const intervalRef = useRef(null);
   const audioRef = useRef(null);
 
   useEffect(() => {
-    if (isRunning && seconds > 0) {
-      intervalRef.current = setInterval(() => {
-        setSeconds((prev) => prev - 1);
-      }, 1000);
-    } else if (seconds === 0 && isRunning) {
+    if (remaining <= 0 && isRunning) {
       clearInterval(intervalRef.current);
       setIsRunning(false);
-      setIsComplete(true);
-
-      if (audioRef.current) audioRef.current.play();
-      if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
-
-      setTimeout(() => setIsComplete(false), 5000);
+      handleTimerComplete();
     }
-    return () => clearInterval(intervalRef.current);
-  }, [isRunning, seconds]);
+  }, [remaining, isRunning]);
 
-  const startTimer = () => {
-    const sec = parseInt(input, 10);
-    if (!isNaN(sec) && sec > 0) {
-      setSeconds(sec);
-      setIsRunning(true);
-      setIsComplete(false);
+  const handleStart = () => {
+    const h = parseInt(hours) || 0;
+    const m = parseInt(minutes) || 0;
+    const s = parseInt(seconds) || 0;
+    const totalMs = (h * 3600 + m * 60 + s) * 1000;
+
+    if (totalMs <= 0) {
+      alert("Please enter a valid time.");
+      return;
     }
+
+    setRemaining(totalMs);
+    setIsRunning(true);
+    setIsSoundPlaying(false); // reset sound state
+
+    intervalRef.current = setInterval(() => {
+      setRemaining((prev) => prev - 1000);
+    }, 1000);
   };
 
-  const resetTimer = () => {
+  const handleStop = () => {
+    clearInterval(intervalRef.current);
     setIsRunning(false);
-    setSeconds(0);
-    setInput('');
-    setLabel('');
-    setIsComplete(false);
   };
 
-  const formatTime = (sec) => {
-    const minutes = Math.floor(sec / 60);
-    const seconds = sec % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  const handleReset = () => {
+    clearInterval(intervalRef.current);
+    setRemaining(0);
+    setIsRunning(false);
+    setHours("");
+    setMinutes("");
+    setSeconds("");
+    handleStopSound(); // also stop sound if playing
+  };
+
+  const handleSoundUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const soundURL = URL.createObjectURL(file);
+      setCustomAudio(soundURL);
+    }
+  };
+
+  const handleTimerComplete = () => {
+    if (customAudio && audioRef.current) {
+      audioRef.current.src = customAudio;
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => { });
+      setIsSoundPlaying(true);
+    }
+
+    if (navigator.vibrate) {
+      navigator.vibrate([500, 300, 500]);
+    }
+
+    // Allow sound to play a bit before alert
+    setTimeout(() => {
+      alert(`⏰ "${timerName || "Timer"}" completed!`);
+    }, 300);
+  };
+
+  const handleStopSound = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsSoundPlaying(false);
+  };
+
+  const formatTime = (ms) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
 
   return (
-    <div className="h-screen w-full flex items-center justify-center">
-      <div className="text-center relative">
-        {/* <audio ref={audioRef} src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto" /> */}
-        {/* <audio ref={audioRef} src="https://www.soundjay.com/button/beep-2.mp3" preload="auto" /> */}
-        {/* <audio ref={audioRef}
-          src="https://cdn.pixabay.com/download/sounds/beep-07.mp3?filename=beep-07"
-          preload="auto" /> */}
-        <audio ref={audioRef}
-          src="https://www.soundjay.com/button/beep-1.mp3"
-          preload="auto" />
-
-        <div className="text-5xl font-mono mb-2">{formatTime(seconds)}</div>
-        {label && <div className="mb-4 text-xl text-gray-300 italic">Timer: {label}</div>}
-
-        {isComplete && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70 z-50">
-            <div className="bg-white text-black text-2xl font-bold px-8 py-6 rounded-lg shadow-lg animate-bounce">
-              ⏳ Time's up!
-            </div>
-          </div>
-        )}
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-white text-black dark:bg-gray-900 dark:text-white transition-colors duration-300">
+      <div className="bg-gray-100 dark:bg-gray-800 p-12 rounded-2xl shadow-md">
+        <h1 className="text-4xl font-bold mb-6 text-center">⏳ Timer</h1>
 
         <input
           type="text"
-          placeholder="Timer name (optional)"
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          className="px-4 py-2 rounded text-black mb-2"
-          disabled={isRunning}
+          placeholder="Name your timer"
+          value={timerName}
+          onChange={(e) => setTimerName(e.target.value)}
+          className="mb-6 px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 w-full max-w-sm text-center bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
 
-        <input
-          type="number"
-          placeholder="Seconds"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="px-4 py-2 rounded text-black mb-4 block mx-auto"
-          disabled={isRunning}
-        />
-
-        <div className="space-x-4">
-          <button onClick={startTimer} className="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Start</button>
-          <button onClick={resetTimer} className="px-4 py-2 bg-red-600 rounded hover:bg-red-700">Reset</button>
+        <div className="flex flex-wrap justify-center gap-3 mb-6 w-full max-w-sm">
+          <input
+            type="number"
+            min="0"
+            placeholder="HH"
+            value={hours}
+            onChange={(e) => setHours(e.target.value)}
+            className="w-24 px-3 py-2 text-center rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          />
+          <input
+            type="number"
+            min="0"
+            placeholder="MM"
+            value={minutes}
+            onChange={(e) => setMinutes(e.target.value)}
+            className="w-24 px-3 py-2 text-center rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          />
+          <input
+            type="number"
+            min="0"
+            placeholder="SS"
+            value={seconds}
+            onChange={(e) => setSeconds(e.target.value)}
+            className="w-24 px-3 py-2 text-center rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          />
         </div>
+
+        <div className="text-5xl sm:text-6xl font-mono font-semibold mb-6 text-center">
+          {formatTime(remaining)}
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-4 mb-6">
+          {!isRunning ? (
+            <button
+              onClick={handleStart}
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition"
+            >
+              Start
+            </button>
+          ) : (
+            <button
+              onClick={handleStop}
+              className="px-5 py-2.5 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition"
+            >
+              Pause
+            </button>
+          )}
+          <button
+            onClick={handleReset}
+            className="px-5 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-medium transition"
+          >
+            Reset
+          </button>
+        </div>
+
+        {isSoundPlaying && (
+          <button
+            onClick={handleStopSound}
+            className="mb-6 px-5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-medium transition"
+          >
+            Stop Sound
+          </button>
+        )}
+
+        <div className="w-full max-w-sm">
+          <label className="block mb-2 text-sm font-medium">🔊 Upload Custom Sound</label>
+          <input
+            type="file"
+            accept="audio/*"
+            onChange={handleSoundUpload}
+            className="block w-full text-sm text-gray-700 dark:text-gray-200 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 transition"
+          />
+        </div>
+
+        <audio ref={audioRef} />
       </div>
     </div>
   );
-}
+};
 
 export default Timer;

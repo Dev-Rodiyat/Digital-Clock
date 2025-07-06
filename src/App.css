@@ -5,3 +5,10 @@
   font-family: Arial, sans-serif;
   outline: none;
 }
+
+@media (max-width: 400px) {
+  .clock {
+    width: 90vw;
+    height: 90vw;
+  }
+}
