@@ -84,7 +84,6 @@ const Alarm = () => {
                 audioRef.current.play().catch(console.error);
             }
 
-            // 📱 Trigger Vibration (if supported)
             if (navigator.vibrate) {
                 navigator.vibrate([500, 300, 500]);
             }
@@ -96,7 +95,7 @@ const Alarm = () => {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
         }
-        navigator.vibrate?.(0); // stop vibration
+        navigator.vibrate?.(0);
         setPlayingSound(null);
         setShowModal(false);
         setActiveAlarm(null);

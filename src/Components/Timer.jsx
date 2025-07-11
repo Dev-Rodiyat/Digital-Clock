@@ -72,7 +72,7 @@ const Timer = () => {
     if (file) {
       const soundURL = URL.createObjectURL(file);
       setCustomAudio(soundURL);
-      setSelectedDefaultSound(null); // Clear default if custom uploaded
+      setSelectedDefaultSound(null);
     }
   };
 
@@ -117,7 +117,6 @@ const Timer = () => {
       <div className="bg-white dark:bg-gray-800 p-8 sm:p-12 max-[400px]:p-5 rounded-2xl shadow-md w-full max-w-xl border border-gray-200 dark:border-gray-700">
         <h1 className="text-4xl max-[400px]:text-3xl font-bold mb-8 text-center">⏳ Timer</h1>
 
-        {/* Timer Name */}
         <div className="mb-6">
           <input
             type="text"
@@ -128,7 +127,6 @@ const Timer = () => {
           />
         </div>
 
-        {/* Time Inputs */}
         <div className="grid grid-cols-3 gap-4 mb-6 w-full max-w-xs mx-auto">
           {[hours, minutes, seconds].map((val, i) => (
             <input
@@ -143,12 +141,10 @@ const Timer = () => {
           ))}
         </div>
 
-        {/* Timer Display */}
         <div className="text-5xl sm:text-6xl max-[400px]:text-4xl font-mono font-semibold mb-8 text-center">
           {formatTime(remaining)}
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-center gap-4 mb-6 flex-wrap">
           {!isRunning ? (
             <button
@@ -173,7 +169,6 @@ const Timer = () => {
           </button>
         </div>
 
-        {/* Stop Sound Button */}
         {isSoundPlaying && (
           <button
             onClick={handleStopSound}
@@ -185,7 +180,6 @@ const Timer = () => {
 
         <hr className="border-gray-300 dark:border-gray-600 my-6" />
 
-        {/* Sound Selector */}
         <div className="mb-6">
           <label className="block mb-2 text-sm font-medium">🎵 Choose a Default Sound</label>
           <select
@@ -210,7 +204,6 @@ const Timer = () => {
           </select>
         </div>
 
-        {/* Upload Custom Sound */}
         <div className="mb-4">
           <label className="block mb-2 text-sm font-medium">🔊 Upload Custom Sound</label>
           <input
@@ -221,7 +214,6 @@ const Timer = () => {
           />
         </div>
 
-        {/* Selected Sound Message */}
         {(customAudio || selectedDefaultSound) && (
           <p className="mt-2 text-sm text-center text-green-600 dark:text-green-400">
             Selected sound:{" "}

@@ -17,7 +17,7 @@ A sleek, responsive, and theme-aware **Time Utility Dashboard** built with **Rea
 * **React** – Component-based UI
 * **Tailwind CSS** – Utility-first styling
 * **React Icons** – For sidebar toggle icons
-* **LocalStorage (optional)** – To remember theme preferences (if implemented)
+* **LocalStorage (optional)** – To remember theme preferences and save alarm history
 
 ## 📁 Folder Structure
 

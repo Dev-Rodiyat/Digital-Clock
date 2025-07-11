@@ -26,17 +26,15 @@ const Clock = () => {
   }, [is24Hour]);
 
   const now = new Date();
-  const secondAngle = now.getSeconds() * 6; // 360 / 60
+  const secondAngle = now.getSeconds() * 6;
   const minuteAngle = now.getMinutes() * 6 + now.getSeconds() * 0.1;
   const hourAngle = (now.getHours() % 12) * 30 + now.getMinutes() * 0.5;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-900 dark:to-gray-900 text-black dark:text-white transition-colors duration-300 px-4">
       <div className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full border-[8px] border-gray-300 dark:border-gray-700 shadow-inner bg-white dark:bg-gray-800 flex items-center justify-center">
-        {/* Clock center pin */}
         <div className="absolute w-3 h-3 bg-black dark:bg-white rounded-full z-10" />
 
-        {/* HOUR HAND */}
         <div
           className="absolute w-1 h-16 bg-black dark:bg-white origin-bottom"
           style={{
@@ -45,7 +43,6 @@ const Clock = () => {
           }}
         />
 
-        {/* MINUTE HAND */}
         <div
           className="absolute w-1 h-24 bg-gray-700 dark:bg-gray-300 origin-bottom"
           style={{
@@ -54,7 +51,6 @@ const Clock = () => {
           }}
         />
 
-        {/* SECOND HAND */}
         <div
           className="absolute w-0.5 h-28 bg-red-500 origin-bottom"
           style={{
@@ -63,7 +59,6 @@ const Clock = () => {
           }}
         />
 
-        {/* Numbers */}
         {Array.from({ length: 12 }).map((_, i) => {
           const angle = (i + 1) * 30;
           const rad = (angle * Math.PI) / 180;
