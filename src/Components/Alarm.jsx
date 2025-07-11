@@ -5,9 +5,9 @@ import sound2 from './../assets/def2.mp3'
 import sound3 from './../assets/def3.mp3'
 
 const defaultTones = [
-    { name: "Classic Beep", url: { sound1 } },
-    { name: "Digital Alarm", url: { sound2 } },
-    { name: "Soft Chime", url: { sound3 } },
+    { name: "Classic Beep", url: sound1 },
+    { name: "Digital Alarm", url: sound2 },
+    { name: "Soft Chime", url: sound3 },
 ];
 
 const getStoredAlarms = () => {
@@ -195,47 +195,48 @@ const Alarm = () => {
     };
 
     return (
-        <div className="min-h-screen p-4 sm:p-6 md:p-8 bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base">
+        <div className="min-h-screen p-4 sm:p-6 md:p-8 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-900 dark:to-gray-800 text-black dark:text-white text-sm sm:text-base">
             <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">⏰ Alarm</h1>
 
             <form
                 onSubmit={addOrUpdateAlarm}
-                className="flex flex-col gap-3 w-full max-w-md mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-md"
+                className="flex flex-col gap-3 w-full max-w-md mx-auto bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700"
             >
                 <input
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
                     required
-                    className="p-2 rounded border dark:bg-gray-800 w-full"
+                    className="p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-800 w-full"
                 />
                 <input
                     type="text"
                     placeholder="Label"
                     value={label}
                     onChange={(e) => setLabel(e.target.value)}
-                    className="p-2 rounded border dark:bg-gray-800 w-full"
+                    className="p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-800 w-full"
                 />
                 <select
                     value={repeat}
                     onChange={(e) => setRepeat(e.target.value)}
-                    className="p-2 rounded border dark:bg-gray-800 w-full"
+                    className="p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-800 w-full"
                 >
                     <option value="once">Once</option>
                     <option value="daily">Daily</option>
                     <option value="weekdays">Weekdays</option>
                 </select>
 
-                {/* <div>
+                <div>
                     <label className="block text-sm mb-1">Choose default tone:</label>
                     <select
                         value={useDefaultTone}
+                        disabled={soundFile !== null}
                         onChange={(e) => {
                             setUseDefaultTone(e.target.value);
                             setSoundFile(null);
                             setSoundName("");
                         }}
-                        className="p-2 rounded border dark:bg-gray-800 w-full"
+                        className={`p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-800 w-full ${soundFile ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                         <option value="">-- None --</option>
                         {defaultTones.map((tone) => (
@@ -244,15 +245,16 @@ const Alarm = () => {
                             </option>
                         ))}
                     </select>
-                </div> */}
+                </div>
 
                 <div>
                     <label className="block text-sm mb-1">Or upload custom sound:</label>
                     <input
                         type="file"
                         accept="audio/*"
+                        disabled={useDefaultTone !== ""}
                         onChange={handleSoundUpload}
-                        className="p-2 rounded border dark:bg-gray-800 w-full"
+                        className={`p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-800 w-full ${useDefaultTone ? "opacity-50 cursor-not-allowed" : ""}`}
                     />
                 </div>
 
@@ -265,7 +267,7 @@ const Alarm = () => {
                         step="0.01"
                         value={volume}
                         onChange={(e) => setVolume(parseFloat(e.target.value))}
-                        className="w-full"
+                        className="w-full accent-blue-600"
                     />
                 </div>
 
@@ -283,22 +285,21 @@ const Alarm = () => {
                 {alarms.map((alarm) => (
                     <li
                         key={alarm.id}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 border rounded dark:border-gray-700"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 border rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
                     >
                         <div>
                             <div className="text-lg font-semibold">{alarm.time}</div>
-                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                            <div className="text-sm text-gray-700 dark:text-gray-300">
                                 {alarm.label}
                             </div>
-                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                            <div className="text-sm text-gray-700 dark:text-gray-300">
                                 Sound: {alarm.soundName}
                             </div>
                         </div>
                         <div className="flex gap-2 flex-wrap justify-end">
                             <button
                                 onClick={() => toggleAlarm(alarm.id)}
-                                className={`px-3 py-1 rounded text-white ${alarm.on ? "bg-green-500" : "bg-gray-400"
-                                    }`}
+                                className={`px-3 py-1 rounded text-white ${alarm.on ? "bg-green-500" : "bg-gray-500"}`}
                             >
                                 {alarm.on ? "On" : "Off"}
                             </button>
@@ -320,8 +321,8 @@ const Alarm = () => {
             </ul>
 
             {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-4">
-                    <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-xl w-full max-w-sm text-center">
+                <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded shadow-xl w-full max-w-sm text-center border border-gray-300 dark:border-gray-700">
                         <h2 className="text-xl font-bold mb-4">
                             ⏰ {activeAlarm?.label || "Alarm!"}
                         </h2>
@@ -329,13 +330,13 @@ const Alarm = () => {
                         <div className="flex justify-center gap-2 flex-wrap">
                             <button
                                 onClick={stopAlarm}
-                                className="px-4 py-2 bg-red-500 text-white rounded"
+                                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded"
                             >
                                 Stop
                             </button>
                             <button
                                 onClick={snoozeAlarm}
-                                className="px-4 py-2 bg-yellow-500 text-white rounded"
+                                className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded"
                             >
                                 Snooze +5 min
                             </button>

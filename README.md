@@ -1,12 +1,77 @@
-# React + Vite
+# ⏱️ Time Utility Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sleek, responsive, and theme-aware **Time Utility Dashboard** built with **React** and **Tailwind CSS**. It features four core time tools — **Clock**, **Stopwatch**, **Timer**, and **Alarm** — all accessible from a smooth animated sidebar.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* 🕒 **Clock** – Displays the current time and date.
+* ⏱️ **Stopwatch** – Start, pause, and reset your stopwatch.
+* ⏳ **Timer** – Set countdowns with optional sounds or visual alerts.
+* ⏰ **Alarm** – Create and manage alarms.
+* 📱 **Responsive UI** – Works well on desktop and mobile.
+* 🧭 **Animated Sidebar** – Smooth transitions and intuitive navigation.
+* 🎨 **Soft Blue Styling** – Clean, non-glassmorphic look with soft blue shades.
 
-## Expanding the ESLint configuration
+## 🧰 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* **React** – Component-based UI
+* **Tailwind CSS** – Utility-first styling
+* **React Icons** – For sidebar toggle icons
+* **LocalStorage (optional)** – To remember theme preferences (if implemented)
+
+## 📁 Folder Structure
+
+```
+src/
+├── components/
+│   ├── Clock.jsx
+│   ├── Stopwatch.jsx
+│   ├── Timer.jsx
+│   ├── Alarm.jsx
+├── App.jsx
+├── index.js
+```
+
+> Each tool (Clock, Stopwatch, etc.) is isolated in its own component.
+
+## 🖼️ UI Preview
+
+| Light Mode          | Dark Mode                |
+| ------------------- | ------------------------ |
+| ![light](image.png) | ![alt text](image-1.png) |
+
+
+## 🛠️ Installation & Setup
+
+1. **Clone the repo**
+
+   ```bash
+   git clone https://github.com/Dev-Rodiyat/Digital-Clock.git
+   cd Digital-Clock
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+4. Visit `http://localhost:5173` in your browser.
+
+## ⚙️ Customization
+
+To change the theme colors or layout:
+
+* Edit Tailwind classes in `App.jsx` or individual component files.
+* Modify Tailwind config if needed.
+
+## 🧪 Planned Features
+
+* ⬜ Notification support
+* ⬜ Timezone switching for Clock
